@@ -56,8 +56,78 @@ function filterTable() {
     var filter = document.forms.frmFiltro.cognome.value;
 
     var alunniFilter = alunni.filter(function(v){
-        return filter == v.cognome.substr(0,filter.length);
+        return filter.toLowerCase() == v.cognome
+                                        .substr(0,filter.length)
+                                        .toLowerCase();
     });
 
     loadTable(alunniFilter);
+}
+
+
+function nascondiMostra() {
+    //1. recuperare valore checkbox
+    var checked = document.forms.frmAlerts.nascondi.checked;
+
+    //2. aggiornare titolo Alerts (id=titleAlerts)
+    var title = document.getElementById('titleAlerts');
+    //operatore ternario
+    title.innerHTML = checked ? 'Alerts - nascosti' : 'Alerts'; 
+    
+    /*
+    if(checked) {
+        title.innerHTML = 'Alerts - nascosti';
+    } else {
+        title.innerHTML = 'Alerts';        
+    }
+    */
+
+    //3. modificare style degli alerts (display=none o block)
+    //var items = document.getElementsByClassName('alert'); 
+    var items = document.querySelectorAll('.alert'); 
+    
+    //console.log(typeof(items));
+    //console.log(Array.isArray(items));
+    //console.log(items.hasOwnProperty('forEach'));
+    //console.log(items.forEach);
+
+    items.forEach(function(item){
+        item.style.display = checked ? 'none' : 'block';
+    });
+
+}
+
+function updateProgress() {
+    //1. RECUPERO VALORE CASELLA DI INPUT   
+    var value = document.forms.frmProgress.progress.value;
+
+    //2. recupero elemento html della prima progress 
+    //   (utilizzo classe progress-bar)
+    var pbar = document.querySelector('.progress-bar');
+
+    //3. aggiorno width dell'elemnto
+    pbar.style.width = value + '%';
+}
+
+function caricaJQ() {
+    $.get('https://jsonplaceholder.typicode.com/users',
+            function(data, status)  {
+                //compilare dati su tabella table2
+                var tb = document.getElementById('table2');
+                var tbody = tb.getElementsByTagName('tbody')[0];
+                tbody.innerHTML = '';
+
+                for(var i=0; i<data.length; i++) {
+                    var row = document.createElement('tr');
+                    row.innerHTML = '<td>' + data[i].id + '</td>';
+                    row.innerHTML += '<td>' + data[i].name + '</td>';
+                    row.innerHTML += '<td>' + data[i].email + '</td>';
+                    row.innerHTML += '<td>' + data[i].username + '</td>';
+
+                    tbody.appendChild(row);
+                }
+
+
+            }
+    );
 }
